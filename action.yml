@@ -1,0 +1,55 @@
+name: "Build AGENTS.md from Skills"
+description: "Scans skills/*/SKILL.md and updates AGENTS.md between <skills> tags"
+author: "Dave Hulbert"
+branding:
+  icon: "book"
+  color: "blue"
+
+inputs:
+  repo-root:
+    description: "Repository root (if running in a subdir)"
+    required: false
+    default: "."
+  skills-dir:
+    description: "Directory containing skills"
+    required: false
+    default: "skills"
+  agents-path:
+    description: "Path to AGENTS.md to modify"
+    required: false
+    default: "AGENTS.md"
+  node-version:
+    description: "Node version to use"
+    required: false
+    default: "20"
+
+outputs:
+  changed:
+    description: "true if AGENTS.md changed"
+    value: ${{ steps.diff.outputs.changed }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Run generator
+      shell: bash
+      run: |
+        set -euo pipefail
+        node "${{ github.action_path }}/scripts/skills-to-agents.js" \
+          --skills "$PWD/${{ inputs.repo-root }}/${{ inputs.skills-dir }}" \
+          --agents "$PWD/${{ inputs.repo-root }}/${{ inputs.agents-path }}"
+
+    - name: Diff AGENTS.md
+      id: diff
+      shell: bash
+      run: |
+        if git status --porcelain | grep -E '^\s*M\s+${{ inputs.agents-path }}$' >/dev/null; then
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+        fi
