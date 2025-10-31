@@ -40,7 +40,7 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        node "${{ github.action_path }}/scripts/skills-to-agents.js" \
+        node "${{ github.action_path }}/src/skills-to-agents.js" \
           --skills "$PWD/${{ inputs.repo-root }}/${{ inputs.skills-dir }}" \
           --agents "$PWD/${{ inputs.repo-root }}/${{ inputs.agents-path }}"
 
