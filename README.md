@@ -44,11 +44,10 @@ on:
   push:
     paths:
       - "skills/**"
-      - "AGENTS.md"
   pull_request:
     paths:
       - "skills/**"
-      - "AGENTS.md"
+  workflow_dispatch:
 
 jobs:
   build-agents-md:
@@ -57,7 +56,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Generate skills block
-        uses: dave1010/skills-to-agents@main
+        uses: dave1010/skills-to-agents@v1
         with:
           repo-root: .
           skills-dir: skills
@@ -66,13 +65,66 @@ jobs:
 
 The action sets up Node.js, runs the generator, and exposes a `changed` output so you can decide whether to commit or open a PR with the new `AGENTS.md` content.
 
-## Repository layout
+### Update on push, auto-commit (requires permissions)
 
-```
-.
-├── action.yml              # Composite GitHub Action definition
-├── src/skills-to-agents.js # CLI that performs the translation
-└── README.md               # Project overview and usage docs
+```yaml
+name: Build agents.md
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-agents:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build AGENTS.md
+        id: build
+        uses: dave1010/skills-to-agents@v1
+      - name: Commit changes
+        if: steps.build.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add AGENTS.md
+          git commit -m "chore(agents): update AGENTS.md"
+          git push
 ```
 
-Add your actual Skills under `skills/<skill-name>/SKILL.md`, and the tool will keep the agent-facing documentation synchronized automatically.
+### Open a PR instead of direct commit
+
+```yaml
+permissions:
+  contents: write
+  pull-requests: write
+
+steps:
+  - uses: actions/checkout@v4
+  - uses: dave1010/skills-to-agents@v1
+  - uses: peter-evans/create-pull-request@v7
+    if: steps.build.outputs.changed == 'true'
+    with:
+      branch: chore/update-agents
+      title: "Update AGENTS.md"
+      commit-message: "chore(agents): update AGENTS.md"
+      body: "Automated update of AGENTS.md from skills."
+```
+
+## Managing skills
+
+Add your actual Skills under `skills/<skill-name>`, and the tool will keep the agent-facing documentation synchronized automatically.
+
+Skills could be:
+
+- committed in the repo
+- symlinked
+- part of the build process
+
+Ensure the Skills exist in the workspace when this action is ran.
+If the Skills are brought in as part of the build, then ensure your coding agent knows how to do this, otherwise the Skills won't be where it expdcts to find them.
+
+
