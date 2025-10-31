@@ -1,2 +1,78 @@
 # skills-to-agents
-Automatic support for (Claude) Skills for any coding agent that supports AGENTS.md
+
+`skills-to-agents` is a tiny CLI and GitHub Action that lets any coding agent which understands the `AGENTS.md` convention take advantage of Claude-style Skills.
+
+Claude's Skills system packages reusable agent instructions, metadata, and optional code or reference material inside directories that contain a `SKILL.md`. This project maps those directories onto the far more widespread `AGENTS.md` convention so that agents from other ecosystems can load the same Skill instructions without additional integration work.
+
+## What it does
+
+* **Scans Claude Skill directories** – the tool looks for `skills/*/SKILL.md`, parses the YAML frontmatter, and collects each Skill's name, description, and relative path.
+* **Generates `AGENTS.md` entries** – it inserts a `<skills>…</skills>` block (creating one if necessary) that lists every Skill with a link back to the source instructions.
+* **Ships as a GitHub Action** – run it in CI to keep the `AGENTS.md` file in sync whenever Skill content changes.
+* **Provides a reusable CLI** – run `node src/skills-to-agents.js` locally to preview or update the generated block.
+
+## Why bridge Skills and `AGENTS.md`?
+
+Claude loads Skills progressively: lightweight metadata is always available, detailed instructions are read on demand from `SKILL.md`, and extra resources (scripts, templates, datasets) stay on disk until referenced. By translating those Skill directories into an `AGENTS.md` summary, other agents inherit the same curated instructions and can manually open the linked resources when the task requires deeper guidance.
+
+This project gives you a single source of truth for Skill documentation while staying compatible with the ecosystems that already expect instructions inside `AGENTS.md` files.
+
+## Using the CLI locally
+
+```bash
+npm install # if you want local node_modules for linting or tooling
+node src/skills-to-agents.js --skills-dir skills --agents-path AGENTS.md --write
+```
+
+Key flags:
+
+* `--skills-dir` – directory that contains Skill subfolders (defaults to `skills`).
+* `--agents-path` – target `AGENTS.md` file to update (defaults to `AGENTS.md`).
+* `--preamble` / `--preamble-file` – override the default text inserted at the top of the generated block.
+* `--write` – apply changes; omit it to perform a dry run.
+
+The script exits with an error if required files are missing or frontmatter cannot be parsed, which keeps CI builds honest.
+
+## Running in GitHub Actions
+
+The bundled composite action (`action.yml`) wraps the CLI so you can automate updates in any workflow. A minimal configuration looks like this:
+
+```yaml
+name: Sync AGENTS.md from Skills
+
+on:
+  push:
+    paths:
+      - "skills/**"
+      - "AGENTS.md"
+  pull_request:
+    paths:
+      - "skills/**"
+      - "AGENTS.md"
+
+jobs:
+  build-agents-md:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate skills block
+        uses: dave1010/skills-to-agents@main
+        with:
+          repo-root: .
+          skills-dir: skills
+          agents-path: AGENTS.md
+```
+
+The action sets up Node.js, runs the generator, and exposes a `changed` output so you can decide whether to commit or open a PR with the new `AGENTS.md` content.
+
+## Repository layout
+
+```
+.
+├── action.yml              # Composite GitHub Action definition
+├── src/skills-to-agents.js # CLI that performs the translation
+└── README.md               # Project overview and usage docs
+```
+
+Add your actual Skills under `skills/<skill-name>/SKILL.md`, and the tool will keep the agent-facing documentation synchronized automatically.
