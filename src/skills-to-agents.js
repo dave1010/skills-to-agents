@@ -14,7 +14,7 @@ function printHelp() {
   console.log(
     'Usage: skills-to-agents-md [options]\n\n' +
     'Options:\n' +
-    '  --skills-dir <path>     Path to the skills directory (default: ./skills)\n' +
+    '  --skills-dir <path>     Path to the skills directory (default: ./.skills)\n' +
     '  --agents-path <path>    Path to the AGENTS.md file (default: ./AGENTS.md)\n' +
     '  --preamble <text>       Override preamble text (use \\n for new lines)\n' +
     '  --preamble-file <path>  Read preamble text from a file\n' +
@@ -25,7 +25,7 @@ function printHelp() {
 
 function parseArgs(argv) {
   const options = {
-    skillsDir: 'skills',
+    skillsDir: '.skills',
     agentsPath: 'AGENTS.md',
     preamble: DEFAULT_PREAMBLE,
     write: false,
