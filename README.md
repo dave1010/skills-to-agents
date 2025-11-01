@@ -30,6 +30,8 @@ Skills could be:
 Ensure the Skills exist in the workspace when this action is ran.
 If the Skills are brought in as part of the build, then ensure your coding agent knows how to do this, otherwise the Skills won't be where it expects to find them.
 
+You can see a working example in [dave1010/tools](https://github.com/dave1010/tools), with the generated [AGENTS.md](https://github.com/dave1010/tools/blob/main/AGENTS.md#skills) and the [list of skills](https://github.com/dave1010/tools/tree/main/.skills). Feel free to copy my [Skill writing skill](https://github.com/dave1010/tools/blob/main/.skills/writing-skills/SKILL.md) to help you get started.
+
 ## Running in GitHub Actions
 
 The bundled composite action (`action.yml`) wraps the CLI so you can automate updates in any workflow. The action sets up Node.js, runs the generator, and exposes a `changed` output so you can decide whether to commit or open a PR with the new `AGENTS.md` content.
