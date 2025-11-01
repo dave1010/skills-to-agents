@@ -41,8 +41,8 @@ runs:
       run: |
         set -euo pipefail
         node "${{ github.action_path }}/src/skills-to-agents.js" \
-          --skills "$PWD/${{ inputs.repo-root }}/${{ inputs.skills-dir }}" \
-          --agents "$PWD/${{ inputs.repo-root }}/${{ inputs.agents-path }}" \
+          --skills-dir "$PWD/${{ inputs.repo-root }}/${{ inputs.skills-dir }}" \
+          --agents-path "$PWD/${{ inputs.repo-root }}/${{ inputs.agents-path }}" \
           --write
 
     - name: Diff AGENTS.md
