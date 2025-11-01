@@ -66,6 +66,8 @@ jobs:
 
 This example also has the `workflow_dispatch` trigger, which means you can manually trigger it from the GitHub UI.
 
+If it works then ⭐ this repo! If it fails then check the Action logs and raise an issue if its not something you can fix.
+
 ### Customising options
 
 ```yaml
