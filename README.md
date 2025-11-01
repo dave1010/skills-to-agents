@@ -34,7 +34,8 @@ If the Skills are brought in as part of the build, then ensure your coding agent
 
 The bundled composite action (`action.yml`) wraps the CLI so you can automate updates in any workflow. The action sets up Node.js, runs the generator, and exposes a `changed` output so you can decide whether to commit or open a PR with the new `AGENTS.md` content.
 
-A minimal configuration that commits and pushes a change to AGENTS.md looks like this:
+To get started, add a new file to your repo `.github/workflows/update-agents-skills.yml`,
+with a minimal configuration that commits and pushes a change to AGENTS.md:
 
 ```yaml
 name: Update AGENTS skills list
@@ -60,6 +61,8 @@ jobs:
           commit_message: 'chore: sync AGENTS skills list'
           file_pattern: AGENTS.md
 ```
+
+This example also has the `workflow_dispatch` trigger, which means you can manually trigger it from the GitHub UI.
 
 ### Customising options
 
