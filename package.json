@@ -1,0 +1,20 @@
+{
+  "name": "skills-to-agents",
+  "version": "1.0.0",
+  "description": "CLI and GitHub Action for syncing Claude Skills into AGENTS.md",
+  "main": "src/skills-to-agents.js",
+  "bin": {
+    "skills-to-agents": "./src/skills-to-agents.js"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "skills",
+    "agents",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT"
+}

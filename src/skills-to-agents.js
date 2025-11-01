@@ -343,4 +343,22 @@ function main() {
   console.log('AGENTS.md updated.');
 }
 
-main();
+module.exports = {
+  DEFAULT_PREAMBLE,
+  printHelp,
+  parseArgs,
+  readPreamble,
+  findSkills,
+  extractFrontMatter,
+  unquote,
+  parseFrontMatter,
+  readSkill,
+  buildSkillsBlock,
+  mergeSkillsBlock,
+  writeFileAtomic,
+  main
+};
+
+if (require.main === module) {
+  main();
+}
