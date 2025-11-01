@@ -6,7 +6,7 @@ Claude's Skills system packages reusable agent instructions, metadata, and optio
 
 ## What it does
 
-* **Scans Claude Skill directories** – the tool looks for `skills/*/SKILL.md`, parses the YAML frontmatter, and collects each Skill's name, description, and relative path.
+* **Scans Claude Skill directories** – the tool looks for `.skills/*/SKILL.md`, parses the YAML frontmatter, and collects each Skill's name, description, and relative path.
 * **Generates `AGENTS.md` entries** – it inserts a `<skills>…</skills>` block (creating one if necessary) that lists every Skill with a link back to the source instructions.
 * **Ships as a GitHub Action** – run it in CI to keep the `AGENTS.md` file in sync whenever Skill content changes.
 * **Provides a reusable CLI** – run `node src/skills-to-agents.js` locally to preview or update the generated block.
@@ -19,7 +19,7 @@ This project gives you a single source of truth for Skill documentation while st
 
 ## Managing skills
 
-Add your actual Skills under `skills/<skill-name>`, and the tool will keep the agent-facing documentation synchronized automatically. This path is customisable.
+Add your actual Skills under `.skills/<skill-name>`, and the tool will keep the agent-facing documentation synchronized automatically. This path is customisable.
 
 Skills could be:
 
@@ -45,7 +45,7 @@ on:
     branches:
       - main
     paths:
-      - 'skills/**'
+      - '.skills/**'
   workflow_dispatch:
 
 jobs:
@@ -72,10 +72,10 @@ name: Sync AGENTS.md from Skills
 on:
   push:
     paths:
-      - "skills/**"
+      - ".skills/**"
   pull_request:
     paths:
-      - "skills/**"
+      - ".skills/**"
   workflow_dispatch:
 
 jobs:
@@ -87,7 +87,7 @@ jobs:
         uses: dave1010/skills-to-agents@v1
         with:
           repo-root: .
-          skills-dir: skills
+          skills-dir: .skills
           agents-path: AGENTS.md
 ```
 
@@ -146,7 +146,7 @@ steps:
 | Input | Required | Default | Description |
 | --- | --- | --- | --- |
 | `repo-root` | No | `.` | Repository root (useful if the action runs from a subdirectory). |
-| `skills-dir` | No | `skills` | Directory that contains the Claude Skill subfolders. |
+| `skills-dir` | No | `.skills` | Directory that contains the Claude Skill subfolders. |
 | `agents-path` | No | `AGENTS.md` | Path to the `AGENTS.md` file that will be updated. |
 | `node-version` | No | `20` | Node.js version used while running the generator. |
 
@@ -160,12 +160,12 @@ steps:
 
 ```bash
 npm install # if you want local node_modules for linting or tooling
-node src/skills-to-agents.js --skills-dir skills --agents-path AGENTS.md --write
+node src/skills-to-agents.js --skills-dir .skills --agents-path AGENTS.md --write
 ```
 
 Key flags:
 
-* `--skills-dir` – directory that contains Skill subfolders (defaults to `skills`).
+* `--skills-dir` – directory that contains Skill subfolders (defaults to `.skills`).
 * `--agents-path` – target `AGENTS.md` file to update (defaults to `AGENTS.md`).
 * `--preamble` / `--preamble-file` – override the default text inserted at the top of the generated block.
 * `--write` – apply changes; omit it to perform a dry run.
