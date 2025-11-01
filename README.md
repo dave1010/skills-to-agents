@@ -139,6 +139,20 @@ steps:
       commit-message: "chore(agents): update AGENTS.md"
       body: "Automated update of AGENTS.md from skills."
 ```
+### Action inputs
+
+| Input | Required | Default | Description |
+| --- | --- | --- | --- |
+| `repo-root` | No | `.` | Repository root (useful if the action runs from a subdirectory). |
+| `skills-dir` | No | `skills` | Directory that contains the Claude Skill subfolders. |
+| `agents-path` | No | `AGENTS.md` | Path to the `AGENTS.md` file that will be updated. |
+| `node-version` | No | `20` | Node.js version used while running the generator. |
+
+### Action outputs
+
+| Output | Description |
+| --- | --- |
+| `changed` | `true` when the generated `AGENTS.md` differs from the existing file; otherwise `false`. |
 
 ## Using the CLI locally
 
