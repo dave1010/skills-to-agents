@@ -17,6 +17,8 @@ Claude loads Skills progressively: lightweight metadata is always available, det
 
 This project gives you a single source of truth for Skill documentation while staying compatible with the ecosystems that already expect instructions inside `AGENTS.md` files.
 
+Read [From Skills to Agents: Bridging Claude Skills and AGENTS.md](https://dave.engineer/blog/2025/11/skills-to-agents/) on my blog for more background.
+
 ## Managing skills
 
 Add your actual Skills under `.skills/<skill-name>`, and the tool will keep the agent-facing documentation synchronized automatically. This path is customisable.
