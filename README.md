@@ -1,6 +1,6 @@
 # skills-to-agents
 
-`skills-to-agents` is a tiny CLI and GitHub Action that lets any coding agent which understands the `AGENTS.md` convention take advantage of Claude-style Skills.
+`skills-to-agents` is a tiny CLI and GitHub Action that lets any coding agent which understands the [`AGENTS.md` convention](https://agents.md/) take advantage of [Claude-style Skills](https://support.claude.com/en/articles/12512176-what-are-skills).
 
 Claude's Skills system packages reusable agent instructions, metadata, and optional code or reference material inside directories that contain a `SKILL.md`. This project maps those directories onto the far more widespread `AGENTS.md` convention so that agents from other ecosystems can load the same Skill instructions without additional integration work.
 
@@ -64,6 +64,21 @@ jobs:
 ```
 
 The action sets up Node.js, runs the generator, and exposes a `changed` output so you can decide whether to commit or open a PR with the new `AGENTS.md` content.
+
+### Action inputs
+
+| Input | Required | Default | Description |
+| --- | --- | --- | --- |
+| `repo-root` | No | `.` | Repository root (useful if the action runs from a subdirectory). |
+| `skills-dir` | No | `skills` | Directory that contains the Claude Skill subfolders. |
+| `agents-path` | No | `AGENTS.md` | Path to the `AGENTS.md` file that will be updated. |
+| `node-version` | No | `20` | Node.js version used while running the generator. |
+
+### Action outputs
+
+| Output | Description |
+| --- | --- |
+| `changed` | `true` when the generated `AGENTS.md` differs from the existing file; otherwise `false`. |
 
 ### Update on push, auto-commit (requires permissions)
 
