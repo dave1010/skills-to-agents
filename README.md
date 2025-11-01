@@ -123,6 +123,8 @@ jobs:
 
 ### Open a PR instead of direct commit
 
+You need to give permissions to allow a GitHub Action to raise a PR: from your repo, go to `Settings`, `Actions`, `General`, then scroll down and check *Allow GitHub Actions to create and approve pull requests*.
+
 ```yaml
 permissions:
   contents: write
