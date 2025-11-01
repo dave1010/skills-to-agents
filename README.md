@@ -17,25 +17,51 @@ Claude loads Skills progressively: lightweight metadata is always available, det
 
 This project gives you a single source of truth for Skill documentation while staying compatible with the ecosystems that already expect instructions inside `AGENTS.md` files.
 
-## Using the CLI locally
+## Managing skills
 
-```bash
-npm install # if you want local node_modules for linting or tooling
-node src/skills-to-agents.js --skills-dir skills --agents-path AGENTS.md --write
-```
+Add your actual Skills under `skills/<skill-name>`, and the tool will keep the agent-facing documentation synchronized automatically. This path is customisable.
 
-Key flags:
+Skills could be:
 
-* `--skills-dir` – directory that contains Skill subfolders (defaults to `skills`).
-* `--agents-path` – target `AGENTS.md` file to update (defaults to `AGENTS.md`).
-* `--preamble` / `--preamble-file` – override the default text inserted at the top of the generated block.
-* `--write` – apply changes; omit it to perform a dry run.
+- committed in the repo
+- symlinked
+- part of the build process
 
-The script exits with an error if required files are missing or frontmatter cannot be parsed, which keeps CI builds honest.
+Ensure the Skills exist in the workspace when this action is ran.
+If the Skills are brought in as part of the build, then ensure your coding agent knows how to do this, otherwise the Skills won't be where it expects to find them.
 
 ## Running in GitHub Actions
 
-The bundled composite action (`action.yml`) wraps the CLI so you can automate updates in any workflow. A minimal configuration looks like this:
+The bundled composite action (`action.yml`) wraps the CLI so you can automate updates in any workflow. The action sets up Node.js, runs the generator, and exposes a `changed` output so you can decide whether to commit or open a PR with the new `AGENTS.md` content.
+
+A minimal configuration that commits and pushes a change to AGENTS.md looks like this:
+
+```yaml
+name: Update AGENTS skills list
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+  workflow_dispatch:
+
+jobs:
+  update-agents-skills:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dave1010/skills-to-agents@v1
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: sync AGENTS skills list'
+          file_pattern: AGENTS.md
+```
+
+### Customising options
 
 ```yaml
 name: Sync AGENTS.md from Skills
@@ -54,7 +80,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Generate skills block
         uses: dave1010/skills-to-agents@v1
         with:
@@ -63,9 +88,7 @@ jobs:
           agents-path: AGENTS.md
 ```
 
-The action sets up Node.js, runs the generator, and exposes a `changed` output so you can decide whether to commit or open a PR with the new `AGENTS.md` content.
-
-### Update on push, auto-commit (requires permissions)
+### Update only if AGENTS.md changed
 
 ```yaml
 name: Build agents.md
@@ -114,17 +137,18 @@ steps:
       body: "Automated update of AGENTS.md from skills."
 ```
 
-## Managing skills
+## Using the CLI locally
 
-Add your actual Skills under `skills/<skill-name>`, and the tool will keep the agent-facing documentation synchronized automatically.
+```bash
+npm install # if you want local node_modules for linting or tooling
+node src/skills-to-agents.js --skills-dir skills --agents-path AGENTS.md --write
+```
 
-Skills could be:
+Key flags:
 
-- committed in the repo
-- symlinked
-- part of the build process
+* `--skills-dir` – directory that contains Skill subfolders (defaults to `skills`).
+* `--agents-path` – target `AGENTS.md` file to update (defaults to `AGENTS.md`).
+* `--preamble` / `--preamble-file` – override the default text inserted at the top of the generated block.
+* `--write` – apply changes; omit it to perform a dry run.
 
-Ensure the Skills exist in the workspace when this action is ran.
-If the Skills are brought in as part of the build, then ensure your coding agent knows how to do this, otherwise the Skills won't be where it expdcts to find them.
-
-
+The script exits with an error if required files are missing or frontmatter cannot be parsed, which keeps CI builds honest.
