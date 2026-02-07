@@ -17,7 +17,7 @@ const {
 
 test('parseArgs returns defaults and handles overrides', () => {
   const defaults = parseArgs([]);
-  assert.equal(defaults.skillsDir, '.skills');
+  assert.equal(defaults.skillsDir, '.agents/skills');
   assert.equal(defaults.agentsPath, 'AGENTS.md');
   assert.equal(defaults.write, false);
 
@@ -115,7 +115,7 @@ test('buildSkillsBlock renders preamble and links', () => {
       {
         name: 'Alpha',
         description: 'First skill',
-        link: '.skills/alpha/SKILL.md'
+        link: '.agents/skills/alpha/SKILL.md'
       }
     ],
     'Intro line'
@@ -123,7 +123,7 @@ test('buildSkillsBlock renders preamble and links', () => {
 
   assert.equal(
     block,
-    ['<skills>', '', 'Intro line', '', '- [Alpha](.skills/alpha/SKILL.md) - First skill', '</skills>', ''].join('\n')
+    ['<skills>', '', 'Intro line', '', '- [Alpha](.agents/skills/alpha/SKILL.md) - First skill', '</skills>', ''].join('\n')
   );
 });
 
@@ -140,7 +140,7 @@ test('mergeSkillsBlock replaces existing blocks and appends when missing', () =>
 test('readSkill loads metadata from SKILL.md and builds relative links', () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skills-read-'));
   try {
-    const skillsDir = path.join(tmpDir, '.skills');
+    const skillsDir = path.join(tmpDir, '.agents/skills');
     fs.mkdirSync(skillsDir);
     const skillFolder = path.join(skillsDir, 'alpha');
     fs.mkdirSync(skillFolder);
