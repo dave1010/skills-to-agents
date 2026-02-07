@@ -141,7 +141,7 @@ test('readSkill loads metadata from SKILL.md and builds relative links', () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skills-read-'));
   try {
     const skillsDir = path.join(tmpDir, '.agents/skills');
-    fs.mkdirSync(skillsDir);
+    fs.mkdirSync(skillsDir, { recursive: true });
     const skillFolder = path.join(skillsDir, 'alpha');
     fs.mkdirSync(skillFolder);
     const skillFile = path.join(skillFolder, 'SKILL.md');
