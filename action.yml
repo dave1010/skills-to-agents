@@ -1,5 +1,5 @@
 name: "Build AGENTS.md from Skills"
-description: "Scans .skills/*/SKILL.md and updates AGENTS.md between <skills> tags"
+description: "Scans .agents/skills/*/SKILL.md and updates AGENTS.md between <skills> tags"
 author: "Dave Hulbert"
 branding:
   icon: "book"
@@ -13,7 +13,7 @@ inputs:
   skills-dir:
     description: "Directory containing skills"
     required: false
-    default: ".skills"
+    default: ".agents/skills"
   agents-path:
     description: "Path to AGENTS.md to modify"
     required: false
